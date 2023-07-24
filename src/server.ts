@@ -1,7 +1,9 @@
 import dotenv from 'dotenv'
-import next from 'next'
-import nextBuild from 'next/dist/build'
 import path from 'path'
+
+// This file is used to replace `server.ts` when ejecting i.e. `yarn eject`
+// See `../eject.ts` for exact details on how this file is used
+// See `./README.md#eject` for more information
 
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),
@@ -14,6 +16,11 @@ import { seed } from './seed'
 
 const app = express()
 const PORT = process.env.PORT || 3000
+
+// Redirect root to the admin panel
+app.get('/', (_, res) => {
+  res.redirect('/admin')
+})
 
 const start = async (): Promise<void> => {
   await payload.init({
@@ -30,31 +37,8 @@ const start = async (): Promise<void> => {
     await seed(payload)
   }
 
-  if (process.env.NEXT_BUILD) {
-    app.listen(PORT, async () => {
-      payload.logger.info(`Next.js is now building...`)
-      // @ts-expect-error
-      await nextBuild(path.join(__dirname, '../'))
-      process.exit()
-    })
-
-    return
-  }
-
-  const nextApp = next({
-    dev: process.env.NODE_ENV !== 'production',
-  })
-
-  const nextHandler = nextApp.getRequestHandler()
-
-  app.get('*', (req, res) => nextHandler(req, res))
-
-  nextApp.prepare().then(() => {
-    payload.logger.info('Next.js started')
-
-    app.listen(PORT, async () => {
-      payload.logger.info(`Next.js App URL: ${process.env.PAYLOAD_PUBLIC_SERVER_URL}`)
-    })
+  app.listen(PORT, async () => {
+    payload.logger.info(`App URL: ${process.env.PAYLOAD_PUBLIC_SERVER_URL}`)
   })
 }
 
