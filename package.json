@@ -18,7 +18,8 @@
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:graphQLSchema",
     "lint": "eslint src",
-    "lint:fix": "eslint --fix --ext .ts,.tsx src"
+    "lint:fix": "eslint --fix --ext .ts,.tsx src",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
     "@faceless-ui/css-grid": "^1.2.0",
